@@ -1,0 +1,89 @@
+-- повтор за уроком 4
+SELECT * FROM users;
+UPDATE users SET updated_at = NOW() WHERE updated_at < created_at;
+
+DESC profiles;
+SELECT * FROM profiles p LIMIT 10;
+UPDATE profiles SET updated_at = NOW() WHERE updated_at < created_at;
+SELECT * FROM media LIMIT 10;
+
+SELECT 1+FLOOR(RAND()*100);
+
+UPDATE profiles SET photo_id = 1+FLOOR(RAND()*100);
+
+SELECT * FROM messages LIMIT 10;
+UPDATE messages SET
+  from_user_id = 1+FLOOR(RAND()*100),
+  to_user_id  = 1+FLOOR(RAND()*100);
+
+ UPDATE messages SET updated_at = NOW() WHERE updated_at < created_at;
+ 
+SELECT * FROM media LIMIT 10;
+
+-- сделала таблицу с типами файлов - media_types во время предыдущей домашки, а потом рандомом присвоила каждому файлу тип файла. 
+
+CREATE TABLE media_types (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки",
+  name VARCHAR(255) NOT NULL UNIQUE COMMENT "Название типа",
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки",  
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Время обновления строки"
+) COMMENT "Типы медиафайлов";
+
+
+INSERT INTO `media_types` (`id`, `name`, `created_at`, `updated_at`) VALUES (1, 'music', '2013-04-10 22:40:45', '2016-08-22 12:42:40');
+INSERT INTO `media_types` (`id`, `name`, `created_at`, `updated_at`) VALUES (2, 'video', '2014-03-27 19:22:03', '2013-08-24 21:28:11');
+INSERT INTO `media_types` (`id`, `name`, `created_at`, `updated_at`) VALUES (3, 'photo', '2017-11-12 09:02:39', '2011-09-17 07:09:14');
+
+-- Далее ее редачила по примеру из урока 4
+UPDATE media_types SET updated_at = NOW() WHERE updated_at < created_at;
+ 
+UPDATE media SET user_id = 1+FLOOR(RAND()*100);
+
+
+CREATE TEMPORARY TABLE extensions (name CHAR(3));
+INSERT INTO extensions (name) VALUES ('mp3'), ('avi'), ('mov'), ('mpg');
+SELECT * FROM extensions
+
+UPDATE media SET filename = CONCAT(
+'https://dropbox.com/vk/',
+filename, 
+'.',
+(SELECT name FROM extensions ORDER BY RAND() LIMIT 1)
+);
+
+UPDATE media SET size = 100000+FLOOR(RAND()*100000000) WHERE size < 99999
+
+UPDATE media SET metadata = CONCAT('{"owner":"',
+(SELECT CONCAT (first_name, ' ', last_name) FROM users WHERE id = user_id),
+'"}');
+
+ALTER TABLE media MODIFY COLUMN metadata JSON;
+
+SELECT * FROM friendship;
+UPDATE friendship SET updated_at = NOW() WHERE updated_at < created_at;
+UPDATE friendship SET updated_at = NOW() WHERE requested_at < confirmed_at;
+
+UPDATE friendship SET
+  user_id = 1+FLOOR(RAND()*100),
+  friend_id  = 1+FLOOR(RAND()*100);
+ 
+SELECT * FROM communities;
+UPDATE communities SET updated_at = NOW() WHERE updated_at < created_at;
+DELETE FROM communities WHERE id>30;
+
+SELECT * FROM communities_users;
+
+UPDATE communities_users SET
+  community_id = 1+FLOOR(RAND()*29),
+  user_id  = 1+FLOOR(RAND()*100);
+ 
+ 
+SELECT * FROM  posts_on_user_wall;
+UPDATE posts_on_user_wall SET updated_at = NOW() WHERE updated_at < created_at;
+
+SELECT * FROM  saved_media sm;
+
+
+ИТОГ:
+Все таблицы получилось заполнить данными и обновить, чтобы поддержать логику между таблицами и логику заполненных данных. Также повторила все за уроком и выполнила CRUD операции.
+Пока думаю над курсовым проектом!
